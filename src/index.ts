@@ -4,6 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 
 import location from './routes/location';
+import todo from './routes/todo';
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/location', location);
+app.use('/api/todo', todo);
 
 client
   .connect()
