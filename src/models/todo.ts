@@ -1,4 +1,4 @@
-import MongoDB from 'mongodb';
+import MongoDB, { ObjectId } from 'mongodb';
 
 class Todo {
   data: ITodoData;
@@ -44,6 +44,28 @@ class Todo {
 
     return getTodoObject;
   }
+
+  static async closeTodo(db: MongoDB.Db, data: ITodoCloseData) {
+    let closeTodo: ITodoCloseData = data;
+    closeTodo.closed = new Date();
+
+    const createCloseObject = await db.collection('todo').updateOne(
+      { _id: new ObjectId(closeTodo.todoId) },
+      {
+        $set: {
+          status: 'done',
+          doneBy: closeTodo.doneBy,
+          closed: closeTodo.closed,
+        },
+      }
+    );
+
+    if (!createCloseObject) {
+      throw new Error('Error occurred while closing todo.');
+    }
+
+    return closeTodo;
+  }
 }
 
 export default Todo;
@@ -61,6 +83,12 @@ interface ITodoCreateData {
   locationId: MongoDB.ObjectID;
   name: string;
   status: Status;
+}
+
+interface ITodoCloseData {
+  todoId: MongoDB.ObjectID;
+  doneBy: string;
+  closed?: Date;
 }
 
 type Status = 'todo' | 'doing' | 'done' | 'on-hold';

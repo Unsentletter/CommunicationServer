@@ -48,7 +48,7 @@ router.get('/getByLocation/:id', async (req, res) => {
   }
 });
 
-router.post('/comment/', async (req, res) => {
+router.post('/comment', async (req, res) => {
   const { db } = req.app.locals;
 
   const todoComment = {
@@ -63,6 +63,28 @@ router.post('/comment/', async (req, res) => {
     res.json({
       success: true,
       data: { comment: createCommentObject.data },
+      error: null,
+    });
+  }
+});
+
+router.post('/close', async (req, res) => {
+  const { db } = req.app.locals;
+
+  const closeObject = {
+    todoId: req.body.todoId,
+    doneBy: req.body.doneBy,
+  };
+
+  const createCloseObject = await Todo.closeTodo(db, closeObject);
+
+  console.log('CLOSED', createCloseObject);
+  if (!createCloseObject) {
+    res.json({ success: false, error: 'Comment was not created' });
+  } else {
+    res.json({
+      success: true,
+      data: { todoData: createCloseObject },
       error: null,
     });
   }
