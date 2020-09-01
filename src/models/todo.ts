@@ -1,4 +1,4 @@
-import MongoDB, { ObjectID } from 'mongodb';
+import MongoDB from 'mongodb';
 
 class Todo {
   data: ITodoData;
@@ -26,13 +26,13 @@ class Todo {
     return new Todo(db, todoData);
   }
 
-  static async getByLocation(db: MongoDB.Db, location: any) {
+  static async getByLocation(db: MongoDB.Db, location: string) {
     const getTodoObject = await db
       .collection('todo')
       .aggregate([
         {
           $match: {
-            locationId: '5f4d793da03dc24d12e07835',
+            locationId: location,
           },
         },
       ])
