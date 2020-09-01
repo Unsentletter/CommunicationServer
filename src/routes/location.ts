@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import MongoDB from 'mongodb';
+import Location from '../models/location';
 
 const router = express.Router();
 router.use(cors());
@@ -9,22 +10,23 @@ router.use(bodyParser.json());
 
 router.post('/create', async (req, res) => {
   const { db } = req.app.locals;
-  console.log('DB IS: ', req.body);
 
   const location = {
     name: req.body.name,
     address: req.body.address,
   };
 
-  const createLocationResult = await db
-    .collection('location')
-    .insertOne(location);
-  // console.log('CREATE RESULT', createLocationResult);
-  const newLocationId = createLocationResult.insertedId;
+  const createLocationObject = await Location.create(db, location);
 
-  const response = { success: true, locationId: newLocationId };
-
-  res.json(response);
+  if (!createLocationObject) {
+    res.json({ success: false, error: 'Location was not created' });
+  } else {
+    res.json({
+      success: true,
+      data: { location: createLocationObject.data },
+      error: null,
+    });
+  }
 });
 
 export default router;

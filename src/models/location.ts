@@ -10,22 +10,35 @@ class Location {
     this.db = db;
   }
 
-  static async create(db: MongoDB.Db, LocationData: ILocationData) {
-    // Write to database
-    const createUserResult = await db
+  static async create(db: MongoDB.Db, data: ILocationCreateData) {
+    let newLocationData: ILocationData = data;
+    // Create timestamp
+    newLocationData.created = new Date();
+
+    const createLocationResult = await db
       .collection('location')
-      .insertOne(LocationData);
-    if (!createUserResult) {
-      throw new Error('Error occurred while inserting user.');
+      .insertOne(newLocationData);
+    if (!createLocationResult) {
+      throw new Error('Error occurred while inserting location.');
     }
-    return new Location(db, LocationData);
+    newLocationData.id = String(createLocationResult.insertedId);
+    delete newLocationData._id;
+    const locationData = newLocationData;
+    return new Location(db, locationData);
   }
 }
 
 export default Location;
 
 interface ILocationData {
-  id: string;
+  id?: string;
+  _id?: string;
+  name: string;
+  address: string;
+  created?: Date;
+}
+
+interface ILocationCreateData {
   name: string;
   address: string;
 }

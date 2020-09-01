@@ -27,7 +27,7 @@ app.use('/api/location', location);
 client
   .connect()
   .then((client) => {
-    const db = client.db('Communication');
+    const db = client.db('PoolTodo');
     app.locals.db = db;
     app.listen(port, () => console.info(`REST API running on port ${port}`));
   })
