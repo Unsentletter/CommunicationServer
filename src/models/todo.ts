@@ -1,4 +1,4 @@
-import MongoDB from 'mongodb';
+import MongoDB, { ObjectID } from 'mongodb';
 
 class Todo {
   data: ITodoData;
@@ -24,6 +24,25 @@ class Todo {
     delete newTodoData._id;
     const todoData = newTodoData;
     return new Todo(db, todoData);
+  }
+
+  static async getByLocation(db: MongoDB.Db, location: any) {
+    const getTodoObject = await db
+      .collection('todo')
+      .aggregate([
+        {
+          $match: {
+            locationId: '5f4d793da03dc24d12e07835',
+          },
+        },
+      ])
+      .toArray();
+
+    if (!getTodoObject) {
+      throw new Error('Error occurred while finding todos.');
+    }
+
+    return getTodoObject;
   }
 }
 

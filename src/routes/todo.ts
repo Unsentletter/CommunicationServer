@@ -31,4 +31,20 @@ router.post('/create', async (req, res) => {
   }
 });
 
+router.get('/getByLocation/:id', async (req, res) => {
+  const { db } = req.app.locals;
+
+  const getTodoArray = await Todo.getByLocation(db, req.params.id);
+
+  if (!getTodoArray) {
+    res.json({ success: false, error: 'Location was not created' });
+  } else {
+    res.json({
+      success: true,
+      data: { location: getTodoArray },
+      error: null,
+    });
+  }
+});
+
 export default router;
