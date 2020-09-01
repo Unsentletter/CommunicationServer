@@ -29,4 +29,25 @@ router.post('/create', async (req, res) => {
   }
 });
 
+router.post('/close', async (req, res) => {
+  const { db } = req.app.locals;
+
+  const closeObject = {
+    locationId: req.body.todoId,
+    doneBy: req.body.doneBy,
+  };
+
+  const createCloseObject = await Location.closeLocation(db, closeObject);
+
+  if (!createCloseObject) {
+    res.json({ success: false, error: 'Location was not closed' });
+  } else {
+    res.json({
+      success: true,
+      data: { locationData: createCloseObject },
+      error: null,
+    });
+  }
+});
+
 export default router;

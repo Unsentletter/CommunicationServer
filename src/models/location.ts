@@ -1,4 +1,4 @@
-import MongoDB from 'mongodb';
+import MongoDB, { ObjectId } from 'mongodb';
 // import fetch from 'node-fetch';
 
 class Location {
@@ -26,6 +26,28 @@ class Location {
     const locationData = newLocationData;
     return new Location(db, locationData);
   }
+
+  static async closeLocation(db: MongoDB.Db, data: ILocationCloseData) {
+    let closeLocation: ILocationCloseData = data;
+    closeLocation.closed = new Date();
+
+    const createCloseObject = await db.collection('location').updateOne(
+      { _id: new ObjectId(closeLocation.locationId) },
+      {
+        $set: {
+          status: 'done',
+          doneBy: closeLocation.doneBy,
+          closed: closeLocation.closed,
+        },
+      }
+    );
+
+    if (!createCloseObject) {
+      throw new Error('Error occurred while closing location.');
+    }
+
+    return closeLocation;
+  }
 }
 
 export default Location;
@@ -41,4 +63,10 @@ interface ILocationData {
 interface ILocationCreateData {
   name: string;
   address: string;
+}
+
+interface ILocationCloseData {
+  locationId: MongoDB.ObjectID;
+  doneBy: string;
+  closed?: Date;
 }

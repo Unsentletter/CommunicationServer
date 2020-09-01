@@ -78,9 +78,8 @@ router.post('/close', async (req, res) => {
 
   const createCloseObject = await Todo.closeTodo(db, closeObject);
 
-  console.log('CLOSED', createCloseObject);
   if (!createCloseObject) {
-    res.json({ success: false, error: 'Comment was not created' });
+    res.json({ success: false, error: 'Todo was not closed' });
   } else {
     res.json({
       success: true,
