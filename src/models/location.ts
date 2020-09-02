@@ -14,6 +14,7 @@ class Location {
     let newLocationData: ILocationData = data;
     // Create timestamp
     newLocationData.created = new Date();
+    newLocationData.isClosed = false;
 
     const createLocationResult = await db
       .collection('location')
@@ -21,8 +22,6 @@ class Location {
     if (!createLocationResult) {
       throw new Error('Error occurred while inserting location.');
     }
-    newLocationData.id = String(createLocationResult.insertedId);
-    delete newLocationData._id;
     const locationData = newLocationData;
     return new Location(db, locationData);
   }
@@ -35,9 +34,9 @@ class Location {
       { _id: new ObjectId(closeLocation.locationId) },
       {
         $set: {
-          status: 'done',
           doneBy: closeLocation.doneBy,
           closed: closeLocation.closed,
+          isClosed: true,
         },
       }
     );
@@ -58,6 +57,7 @@ interface ILocationData {
   name: string;
   address: string;
   created?: Date;
+  isClosed?: boolean;
 }
 
 interface ILocationCreateData {
