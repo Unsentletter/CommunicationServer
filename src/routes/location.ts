@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import MongoDB from 'mongodb';
+import MongoDB, { ObjectId } from 'mongodb';
 import Location from '../models/location';
 
 const router = express.Router();
@@ -45,6 +45,31 @@ router.post('/close', async (req, res) => {
     res.json({
       success: true,
       data: { locationData: createCloseObject },
+      error: null,
+    });
+  }
+});
+
+router.get('/get', async (req, res) => {
+  const { db } = req.app.locals;
+
+  const locationList = await db
+    .collection('location')
+    .aggregate([
+      {
+        $match: {
+          isClosed: false,
+        },
+      },
+    ])
+    .toArray();
+
+  if (!locationList) {
+    res.json({ success: false, error: 'Locations were not found' });
+  } else {
+    res.json({
+      success: true,
+      data: { locationList },
       error: null,
     });
   }
