@@ -20,8 +20,6 @@ class Todo {
       throw new Error('Error occurred while inserting todo.');
     }
 
-    newTodoData.id = String(createTodoObject.insertedId);
-    delete newTodoData._id;
     const todoData = newTodoData;
     return new Todo(db, todoData);
   }
@@ -82,7 +80,7 @@ interface ITodoData {
 interface ITodoCreateData {
   locationId: MongoDB.ObjectID;
   name: string;
-  status: Status;
+  status: string;
 }
 
 interface ITodoCloseData {
@@ -90,5 +88,3 @@ interface ITodoCloseData {
   doneBy: string;
   closed?: Date;
 }
-
-type Status = 'todo' | 'doing' | 'done' | 'on-hold';

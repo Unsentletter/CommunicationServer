@@ -16,7 +16,7 @@ router.post('/create', async (req, res) => {
   const todo = {
     locationId: req.body.locationId,
     name: req.body.name,
-    status: req.body.status,
+    status: 'todo',
   };
 
   const createTodoObject = await Todo.create(db, todo);
