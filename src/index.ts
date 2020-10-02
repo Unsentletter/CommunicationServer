@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 
 import location from './routes/location';
 import todo from './routes/todo';
+import user from './routes/user';
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/location', location);
 app.use('/api/todo', todo);
+app.use('/api/user', user);
 
 client
   .connect()
