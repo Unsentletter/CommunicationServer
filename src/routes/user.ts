@@ -1,9 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import passport from 'passport';
-import * as passportLocal from 'passport-local';
-const LocalStrategy = passportLocal.Strategy;
 
 import User from '../models/user';
 
@@ -21,11 +18,20 @@ router.post('/signup', async (req, res) => {
   };
 
   try {
-    await User.signup(db, {
+    const createUser = await User.signup(db, {
       name: user.name,
       email: user.email,
       password: user.password,
     });
+    if (!createUser) {
+      res.json({ success: false, error: 'User was not created' });
+    } else {
+      res.json({
+        success: true,
+        data: { user: createUser.data },
+        error: null,
+      });
+    }
   } catch (err) {
     if (err.code === 11000) {
       res.send('Email already in use');
