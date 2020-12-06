@@ -27,7 +27,7 @@ router.post('/signup', async (req, res) => {
     } else {
       res.json({
         success: true,
-        data: { user: createUser.data },
+        data: createUser,
         error: null,
       });
     }
@@ -51,11 +51,11 @@ router.post('/signin', async (req, res) => {
     if (!signInUser) {
       res.json({ success: false, error: 'User was not logged in' });
     } else {
-      res.json({ success: true, data: { user: signInUser }, error: null });
+      res.json({ success: true, data: signInUser, error: null });
     }
   } catch (err) {
     console.log('SIGN IN ERROR', err);
-    res.send('Something went wrong');
+    res.status(400).send();
   }
 });
 

@@ -1,5 +1,6 @@
 import MongoDB from 'mongodb';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 class User {
   data: IUserData;
@@ -22,14 +23,14 @@ class User {
     if (!createUserObject) {
       throw new Error('Error occurred while creating user.');
     }
+    const token = jwt.sign({ _id: newUserData._id }, 'secretvalue');
+    const newUser = new User(db, newUserData);
 
-    const userData = newUserData;
-    return new User(db, userData);
+    return { user: newUser.data, token };
   }
 
   static async signin(db: MongoDB.Db, data: IUserData) {
     const user = await db.collection('user').findOne({ email: data.email });
-    console.log('TEST', user);
     if (!user) {
       throw new Error('unable to log in');
     }
@@ -39,15 +40,16 @@ class User {
     if (!isMatch) {
       throw new Error('unable to log in');
     }
-    console.log('ISMATCH', isMatch);
 
-    return user;
+    const token = jwt.sign({ _id: user._id }, 'secretvalue');
+    return { user, token };
   }
 }
 
 export default User;
 
 interface IUserData {
+  _id?: string;
   name?: string;
   email: string;
   password: string;

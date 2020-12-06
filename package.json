@@ -11,6 +11,7 @@
   "dependencies": {
     "@types/bcrypt": "^3.0.0",
     "@types/cors": "^2.8.7",
+    "@types/jsonwebtoken": "^8.5.0",
     "@types/mongodb": "^3.5.26",
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",

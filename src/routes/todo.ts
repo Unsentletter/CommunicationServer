@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import MongoDB from 'mongodb';
+import auth from '../middleware/auth';
 
 import Todo from '../models/todo';
 import Comment from '../models/Comment';
@@ -10,7 +10,7 @@ const router = express.Router();
 router.use(cors());
 router.use(bodyParser.json());
 
-router.post('/create', async (req, res) => {
+router.post('/create', auth, async (req, res) => {
   const { db } = req.app.locals;
 
   const todo = {
@@ -32,7 +32,7 @@ router.post('/create', async (req, res) => {
   }
 });
 
-router.get('/getByLocation/:id', async (req, res) => {
+router.get('/getByLocation/:id', auth, async (req, res) => {
   const { db } = req.app.locals;
 
   const getTodoArray = await Todo.getByLocation(db, req.params.id);
@@ -48,7 +48,7 @@ router.get('/getByLocation/:id', async (req, res) => {
   }
 });
 
-router.post('/comment', async (req, res) => {
+router.post('/comment', auth, async (req, res) => {
   const { db } = req.app.locals;
 
   const todoComment = {
@@ -68,7 +68,7 @@ router.post('/comment', async (req, res) => {
   }
 });
 
-router.post('/close', async (req, res) => {
+router.post('/close', auth, async (req, res) => {
   const { db } = req.app.locals;
 
   const closeObject = {

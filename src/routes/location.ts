@@ -1,14 +1,14 @@
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import MongoDB, { ObjectId } from 'mongodb';
 import Location from '../models/location';
+import auth from '../middleware/auth';
 
 const router = express.Router();
 router.use(cors());
 router.use(bodyParser.json());
 
-router.post('/create', async (req, res) => {
+router.post('/create', auth, async (req, res) => {
   const { db } = req.app.locals;
 
   const location = {
@@ -17,7 +17,6 @@ router.post('/create', async (req, res) => {
   };
 
   const createLocationObject = await Location.create(db, location);
-
   if (!createLocationObject) {
     res.json({ success: false, error: 'Location was not created' });
   } else {
@@ -29,7 +28,7 @@ router.post('/create', async (req, res) => {
   }
 });
 
-router.post('/close', async (req, res) => {
+router.post('/close', auth, async (req, res) => {
   const { db } = req.app.locals;
 
   const closeObject = {
@@ -50,7 +49,7 @@ router.post('/close', async (req, res) => {
   }
 });
 
-router.get('/get', async (req, res) => {
+router.get('/get', auth, async (req, res) => {
   const { db } = req.app.locals;
 
   const locationList = await db
