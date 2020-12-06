@@ -10,7 +10,6 @@ router.use(bodyParser.json());
 
 router.post('/signup', async (req, res) => {
   const { db } = req.app.locals;
-
   const user = {
     name: req.body.name,
     email: req.body.email,
@@ -36,8 +35,27 @@ router.post('/signup', async (req, res) => {
     if (err.code === 11000) {
       res.send('Email already in use');
     } else {
+      console.log('SIGN UP ERROR', err);
       res.send('Something went wrong');
     }
+  }
+});
+
+router.post('/signin', async (req, res) => {
+  const { db } = req.app.locals;
+  try {
+    const signInUser = await User.signin(db, {
+      email: req.body.email,
+      password: req.body.password,
+    });
+    if (!signInUser) {
+      res.json({ success: false, error: 'User was not logged in' });
+    } else {
+      res.json({ success: true, data: { user: signInUser }, error: null });
+    }
+  } catch (err) {
+    console.log('SIGN IN ERROR', err);
+    res.send('Something went wrong');
   }
 });
 

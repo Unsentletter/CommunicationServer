@@ -1,4 +1,4 @@
-import MongoDB, { ObjectId } from 'mongodb';
+import MongoDB from 'mongodb';
 import bcrypt from 'bcrypt';
 
 class User {
@@ -26,12 +26,29 @@ class User {
     const userData = newUserData;
     return new User(db, userData);
   }
+
+  static async signin(db: MongoDB.Db, data: IUserData) {
+    const user = await db.collection('user').findOne({ email: data.email });
+    console.log('TEST', user);
+    if (!user) {
+      throw new Error('unable to log in');
+    }
+
+    const isMatch = await bcrypt.compare(data.password, user.password);
+
+    if (!isMatch) {
+      throw new Error('unable to log in');
+    }
+    console.log('ISMATCH', isMatch);
+
+    return user;
+  }
 }
 
 export default User;
 
 interface IUserData {
-  name: string;
+  name?: string;
   email: string;
   password: string;
   created?: Date;
