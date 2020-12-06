@@ -3,6 +3,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 
 import User from '../models/user';
+import auth from '../middleware/auth';
 
 const router = express.Router();
 router.use(cors());
@@ -57,6 +58,10 @@ router.post('/signin', async (req, res) => {
     console.log('SIGN IN ERROR', err);
     res.status(400).send();
   }
+});
+
+router.post('/logout', auth, async (req, res) => {
+  // Not sure I need this
 });
 
 export default router;
