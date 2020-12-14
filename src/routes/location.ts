@@ -14,6 +14,7 @@ router.post('/create', auth, async (req, res) => {
   const location = {
     name: req.body.name,
     address: req.body.address,
+    direction: req.body.direction,
   };
 
   const createLocationObject = await Location.create(db, location);

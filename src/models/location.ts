@@ -58,7 +58,10 @@ interface ILocationData {
   address: string;
   created?: Date;
   isClosed?: boolean;
+  direction?: Direction;
 }
+
+type Direction = 'north' | 'south' | 'local';
 
 interface ILocationCreateData {
   name: string;
